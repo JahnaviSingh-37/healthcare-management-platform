@@ -74,6 +74,12 @@ const Vitals = () => {
       setSuccess('');
       const token = localStorage.getItem('token');
       
+      // Check if user is logged in
+      if (!user || !user._id) {
+        setError('Please login to record vitals');
+        return;
+      }
+      
       // Validate that at least one vital is provided
       if (!newVital.heartRate && !newVital.systolic && !newVital.temperature && 
           !newVital.weight && !newVital.height && !newVital.oxygenSaturation) {
@@ -82,20 +88,36 @@ const Vitals = () => {
       }
       
       const vitalData = {
-        patient: user._id,
-        heartRate: newVital.heartRate ? { value: parseFloat(newVital.heartRate), unit: 'bpm' } : undefined,
-        bloodPressure: (newVital.systolic && newVital.diastolic) ? {
+        patient: user._id.toString(),
+        recordDate: new Date()
+      };
+
+      // Only add fields that have values
+      if (newVital.heartRate) {
+        vitalData.heartRate = { value: parseFloat(newVital.heartRate), unit: 'bpm' };
+      }
+      if (newVital.systolic && newVital.diastolic) {
+        vitalData.bloodPressure = {
           systolic: parseFloat(newVital.systolic),
           diastolic: parseFloat(newVital.diastolic),
           unit: 'mmHg'
-        } : undefined,
-        temperature: newVital.temperature ? { value: parseFloat(newVital.temperature), unit: 'fahrenheit' } : undefined,
-        weight: newVital.weight ? { value: parseFloat(newVital.weight), unit: 'lbs' } : undefined,
-        height: newVital.height ? { value: parseFloat(newVital.height), unit: 'inches' } : undefined,
-        oxygenSaturation: newVital.oxygenSaturation ? { value: parseFloat(newVital.oxygenSaturation), unit: '%' } : undefined,
-        notes: newVital.notes,
-        recordDate: new Date()
-      };
+        };
+      }
+      if (newVital.temperature) {
+        vitalData.temperature = { value: parseFloat(newVital.temperature), unit: 'fahrenheit' };
+      }
+      if (newVital.weight) {
+        vitalData.weight = { value: parseFloat(newVital.weight), unit: 'lbs' };
+      }
+      if (newVital.height) {
+        vitalData.height = { value: parseFloat(newVital.height), unit: 'inches' };
+      }
+      if (newVital.oxygenSaturation) {
+        vitalData.oxygenSaturation = { value: parseFloat(newVital.oxygenSaturation), unit: '%' };
+      }
+      if (newVital.notes) {
+        vitalData.notes = newVital.notes;
+      }
 
       console.log('Sending vital data:', vitalData);
 

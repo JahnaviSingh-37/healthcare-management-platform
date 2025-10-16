@@ -98,15 +98,39 @@ const HealthRecords = () => {
   const handleAddRecord = async () => {
     try {
       setError('');
+      setSuccess('');
       const token = localStorage.getItem('token');
+      
+      // Validate required fields
+      if (!newRecord.patientId) {
+        setError('Please select a patient');
+        return;
+      }
+      if (!newRecord.diagnosis) {
+        setError('Please enter a diagnosis');
+        return;
+      }
+      if (!newRecord.treatment) {
+        setError('Please enter treatment information');
+        return;
+      }
+      
       const symptomsArray = newRecord.symptoms.split(',').map(s => s.trim()).filter(s => s);
       
+      const recordData = {
+        patient: newRecord.patientId, // Backend expects 'patient' not 'patientId'
+        recordType: newRecord.recordType,
+        diagnosis: newRecord.diagnosis,
+        symptoms: symptomsArray,
+        treatment: newRecord.treatment,
+        notes: newRecord.notes
+      };
+
+      console.log('Sending health record data:', recordData);
+
       await axios.post(
         'http://localhost:5001/api/v1/health-records',
-        {
-          ...newRecord,
-          symptoms: symptomsArray
-        },
+        recordData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
@@ -120,10 +144,11 @@ const HealthRecords = () => {
         notes: '',
         patientId: ''
       });
-      fetchHealthRecords();
+      await fetchHealthRecords();
     } catch (error) {
       console.error('Error adding health record:', error);
-      setError(error.response?.data?.message || 'Failed to add health record. Please try again.');
+      console.error('Error response:', error.response?.data);
+      setError(error.response?.data?.error || error.response?.data?.message || 'Failed to add health record. Please try again.');
     }
   };
 
