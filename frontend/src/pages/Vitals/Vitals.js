@@ -15,7 +15,9 @@ import {
   DialogContent,
   DialogActions,
   Chip,
-  CircularProgress
+  CircularProgress,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import {
   MonitorHeart,
@@ -35,6 +37,8 @@ const Vitals = () => {
   const [vitals, setVitals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
   const [newVital, setNewVital] = useState({
     heartRate: '',
     systolic: '',
@@ -66,6 +70,7 @@ const Vitals = () => {
 
   const handleAddVital = async () => {
     try {
+      setError('');
       const token = localStorage.getItem('token');
       const vitalData = {
         patient: user._id,
@@ -87,6 +92,7 @@ const Vitals = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
 
+      setSuccess('Vitals recorded successfully!');
       fetchVitals();
       setOpenDialog(false);
       setNewVital({
@@ -101,6 +107,7 @@ const Vitals = () => {
       });
     } catch (error) {
       console.error('Error adding vital:', error);
+      setError(error.response?.data?.error || 'Failed to add vitals. Please try again.');
     }
   };
 
@@ -496,6 +503,30 @@ const Vitals = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Success Snackbar */}
+      <Snackbar
+        open={!!success}
+        autoHideDuration={4000}
+        onClose={() => setSuccess('')}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setSuccess('')} severity="success" sx={{ width: '100%' }}>
+          {success}
+        </Alert>
+      </Snackbar>
+
+      {/* Error Snackbar */}
+      <Snackbar
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={() => setError('')}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setError('')} severity="error" sx={{ width: '100%' }}>
+          {error}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

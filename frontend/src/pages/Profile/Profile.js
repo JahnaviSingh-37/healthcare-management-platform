@@ -371,7 +371,7 @@ const Profile = () => {
                     disabled={!editing}
                     SelectProps={{ native: true }}
                   >
-                    <option value="">Select</option>
+                    <option value=""></option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="other">Other</option>

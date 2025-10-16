@@ -79,3 +79,57 @@ dump.rdb
 # Temporary files
 tmp/
 temp/
+
+# Documentation (temporary/status files)
+*_GUIDE.md
+*_FIXED.md
+*_COMPLETE.md
+*_STATUS.md
+*_SUMMARY.md
+*_TEST.md
+*_WORKING.md
+*_ISSUE_SOLVED.md
+*_SETUP.md
+STATUS.txt
+RUNNING_STATUS.txt
+FEATURES_SUMMARY.txt
+ALL_*.md
+FAST_*.md
+HEALTH_*.md
+APPOINTMENT_*.md
+SERVERS_*.md
+PUSH_*.md
+QUICK_*.md
+TESTING_*.md
+SECURITY_*.md
+VISUAL_*.md
+ANIMATED_*.md
+IMPLEMENTATION_*.md
+PLATFORM_*.md
+LOGIN_*.md
+REGISTRATION_*.md
+FINAL_*.md
+FIXES_*.md
+BEFORE_*.md
+COMPLETE_*.md
+DATABASE_*.md
+ENV_*.md
+GITHUB_*.md
+NEW_*.md
+PORT_*.md
+ADVANCED_*.md
+API_*.md
+PROJECT_*.md
+
+# Keep only essential documentation
+!README.md
+!ARCHITECTURE.md
+!LICENSE
+
+# Scripts
+*.sh
+!start.sh
+
+# Lock files (optional - include if you want deterministic builds)
+package-lock.json
+*/package-lock.json

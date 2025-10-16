@@ -327,8 +327,11 @@ const Appointments = () => {
                           {new Date(appointment.appointmentDate).toLocaleDateString()}
                         </Typography>
                       </Box>
-                      <Typography variant="h6" mb={1}>
+                      <Typography variant="h6" mb={1} color="text.primary">
                         Dr. {appointment.doctor?.firstName} {appointment.doctor?.lastName}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" mb={2}>
+                        {appointment.doctor?.specialization}
                       </Typography>
                       {appointment.status === 'completed' && !appointment.rating && (
                         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>

@@ -132,11 +132,24 @@ router.get('/trend/:patientId/:vitalType', protect, asyncHandler(async (req, res
 /**
  * @route   POST /api/v1/vitals
  * @desc    Create new vitals record
- * @access  Private (Doctor, Nurse)
+ * @access  Private (Patient can add own, Doctor/Nurse/Admin can add for others)
  */
-router.post('/', protect, authorize('doctor', 'nurse', 'admin'), asyncHandler(async (req, res) => {
+router.post('/', protect, asyncHandler(async (req, res) => {
+  const { role, _id: userId } = req.user;
+  const { patient: patientId } = req.body;
+
+  // Patients can only add vitals for themselves
+  if (role === 'patient' && patientId && patientId !== userId.toString()) {
+    return res.status(403).json({
+      success: false,
+      error: 'Patients can only add vitals for themselves'
+    });
+  }
+
   const vitalsData = {
     ...req.body,
+    // If patient is adding their own vitals, set patient ID
+    patient: role === 'patient' ? userId : req.body.patient,
     recordedBy: req.user._id
   };
 

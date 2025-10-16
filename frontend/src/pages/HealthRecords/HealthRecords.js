@@ -22,7 +22,8 @@ import {
   List,
   ListItem,
   ListItemText,
-  Alert
+  Alert,
+  Snackbar
 } from '@mui/material';
 import {
   MedicalServices,
@@ -38,24 +39,33 @@ import {
   Close
 } from '@mui/icons-material';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const HealthRecords = () => {
+  const { user } = useSelector((state) => state.auth);
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [patients, setPatients] = useState([]);
   const [newRecord, setNewRecord] = useState({
     recordType: 'consultation',
     diagnosis: '',
     symptoms: '',
     treatment: '',
-    notes: ''
+    notes: '',
+    patientId: ''
   });
 
   useEffect(() => {
     fetchHealthRecords();
-  }, []);
+    if (user?.role === 'doctor' || user?.role === 'admin') {
+      fetchPatients();
+    }
+  }, [user]);
 
   const fetchHealthRecords = async () => {
     try {
@@ -71,8 +81,23 @@ const HealthRecords = () => {
     }
   };
 
+  const fetchPatients = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:5001/api/v1/users', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Filter only patients
+      const patientList = response.data.data.filter(u => u.role === 'patient');
+      setPatients(patientList);
+    } catch (error) {
+      console.error('Error fetching patients:', error);
+    }
+  };
+
   const handleAddRecord = async () => {
     try {
+      setError('');
       const token = localStorage.getItem('token');
       const symptomsArray = newRecord.symptoms.split(',').map(s => s.trim()).filter(s => s);
       
@@ -85,17 +110,20 @@ const HealthRecords = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
+      setSuccess('Health record added successfully!');
       setOpenAddDialog(false);
       setNewRecord({
         recordType: 'consultation',
         diagnosis: '',
         symptoms: '',
         treatment: '',
-        notes: ''
+        notes: '',
+        patientId: ''
       });
       fetchHealthRecords();
     } catch (error) {
       console.error('Error adding health record:', error);
+      setError(error.response?.data?.message || 'Failed to add health record. Please try again.');
     }
   };
 
@@ -170,19 +198,48 @@ const HealthRecords = () => {
               Health Records
             </Typography>
           </Box>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              variant="contained"
-              size="large"
-              startIcon={<Add />}
-              onClick={() => setOpenAddDialog(true)}
-              sx={{ borderRadius: 3 }}
-            >
-              Add New Record
-            </Button>
-          </motion.div>
+          {user?.role === 'doctor' || user?.role === 'admin' ? (
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={<Add />}
+                onClick={() => setOpenAddDialog(true)}
+                sx={{ borderRadius: 3 }}
+              >
+                Add New Record
+              </Button>
+            </motion.div>
+          ) : null}
         </Box>
       </motion.div>
+
+      {/* Info Message for Patients */}
+      {user?.role === 'patient' && (
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Alert 
+            severity="info" 
+            icon={<LocalHospital />}
+            sx={{ 
+              mb: 3, 
+              borderRadius: 3,
+              fontSize: 16,
+              '& .MuiAlert-icon': {
+                fontSize: 28
+              }
+            }}
+          >
+            <Typography variant="body1">
+              Your health records are created and managed by your healthcare provider during appointments. 
+              View your medical history below.
+            </Typography>
+          </Alert>
+        </motion.div>
+      )}
 
       {/* Records Grid */}
       {records.length === 0 ? (
@@ -471,6 +528,26 @@ const HealthRecords = () => {
         </DialogTitle>
         <DialogContent dividers>
           <Grid container spacing={3}>
+            {(user?.role === 'doctor' || user?.role === 'admin') && (
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  select
+                  label="Select Patient"
+                  value={newRecord.patientId}
+                  onChange={(e) => setNewRecord({ ...newRecord, patientId: e.target.value })}
+                  required
+                  helperText="Choose the patient for this health record"
+                >
+                  {patients.map((patient) => (
+                    <MenuItem key={patient._id} value={patient._id}>
+                      {patient.name} ({patient.email})
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+            )}
+
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -537,12 +614,40 @@ const HealthRecords = () => {
           <Button
             variant="contained"
             onClick={handleAddRecord}
-            disabled={!newRecord.diagnosis || !newRecord.treatment}
+            disabled={
+              !newRecord.diagnosis || 
+              !newRecord.treatment || 
+              ((user?.role === 'doctor' || user?.role === 'admin') && !newRecord.patientId)
+            }
           >
             Add Record
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Success Snackbar */}
+      <Snackbar
+        open={!!success}
+        autoHideDuration={4000}
+        onClose={() => setSuccess('')}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setSuccess('')} severity="success" sx={{ width: '100%' }}>
+          {success}
+        </Alert>
+      </Snackbar>
+
+      {/* Error Snackbar */}
+      <Snackbar
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={() => setError('')}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setError('')} severity="error" sx={{ width: '100%' }}>
+          {error}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

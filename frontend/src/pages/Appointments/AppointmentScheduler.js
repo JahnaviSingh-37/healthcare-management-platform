@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   Paper,
@@ -36,6 +37,7 @@ import {
 import axios from 'axios';
 
 const AppointmentScheduler = () => {
+  const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -501,7 +503,7 @@ const AppointmentScheduler = () => {
               <Button
                 variant="contained"
                 size="large"
-                onClick={() => window.location.href = '/appointments'}
+                onClick={() => navigate('/appointments')}
                 sx={{
                   bgcolor: 'white',
                   color: 'primary.main',

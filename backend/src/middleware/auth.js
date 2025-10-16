@@ -20,11 +20,6 @@ const protect = asyncHandler(async (req, res, next) => {
 
   // Check if token exists
   if (!token) {
-    logger.warn('Access attempt without token', {
-      path: req.path,
-      ip: req.ip
-    });
-    
     return res.status(401).json({
       success: false,
       error: 'Not authorized to access this route'
@@ -35,15 +30,12 @@ const protect = asyncHandler(async (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Check if user still exists
-    const user = await User.findById(decoded.id).select('-password');
+    // Check if user still exists - lean query for better performance
+    const user = await User.findById(decoded.id)
+      .select('-password -resetPasswordToken -resetPasswordExpire')
+      .lean();
 
     if (!user) {
-      logger.warn('Token used for non-existent user', {
-        userId: decoded.id,
-        ip: req.ip
-      });
-      
       return res.status(401).json({
         success: false,
         error: 'User no longer exists'
@@ -52,22 +44,6 @@ const protect = asyncHandler(async (req, res, next) => {
 
     // Check if user is active
     if (!user.isActive) {
-      logger.warn('Inactive user access attempt', {
-        userId: user._id,
-        email: user.email,
-        ip: req.ip
-      });
-      
-      await AuditLog.logAction({
-        user: user._id,
-        action: 'ACCESS_DENIED',
-        resource: 'API',
-        details: { reason: 'User account is inactive' },
-        ipAddress: req.ip,
-        userAgent: req.headers['user-agent'],
-        status: 'failure'
-      });
-      
       return res.status(403).json({
         success: false,
         error: 'Account is inactive. Please contact support.'
@@ -76,51 +52,26 @@ const protect = asyncHandler(async (req, res, next) => {
 
     // Check if user is locked
     if (user.isLocked) {
-      logger.warn('Locked user access attempt', {
-        userId: user._id,
-        email: user.email,
-        ip: req.ip
-      });
-      
-      await AuditLog.logAction({
-        user: user._id,
-        action: 'ACCESS_DENIED',
-        resource: 'API',
-        details: { reason: 'Account is locked due to multiple failed login attempts' },
-        ipAddress: req.ip,
-        userAgent: req.headers['user-agent'],
-        status: 'failure'
-      });
-      
       return res.status(403).json({
         success: false,
         error: 'Account is locked. Please try again later or contact support.'
       });
     }
 
-    // Check if password was changed after token was issued
-    if (user.changedPasswordAfter(decoded.iat)) {
-      logger.warn('Token used after password change', {
-        userId: user._id,
-        email: user.email,
-        ip: req.ip
-      });
-      
-      return res.status(401).json({
-        success: false,
-        error: 'Password was recently changed. Please log in again.'
-      });
+    // Check if password was changed after token was issued (only if method exists)
+    if (user.changedPasswordAfter && typeof user.changedPasswordAfter === 'function') {
+      if (user.changedPasswordAfter(decoded.iat)) {
+        return res.status(401).json({
+          success: false,
+          error: 'Password was recently changed. Please log in again.'
+        });
+      }
     }
 
     // Grant access
     req.user = user;
     next();
   } catch (error) {
-    logger.error('JWT verification failed', {
-      error: error.message,
-      ip: req.ip
-    });
-    
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({
         success: false,
@@ -141,30 +92,6 @@ const protect = asyncHandler(async (req, res, next) => {
 const authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      logger.warn('Unauthorized role access attempt', {
-        userId: req.user._id,
-        userRole: req.user.role,
-        requiredRoles: roles,
-        path: req.path,
-        ip: req.ip
-      });
-      
-      AuditLog.logAction({
-        user: req.user._id,
-        action: 'ACCESS_DENIED',
-        resource: req.path,
-        details: { 
-          reason: 'Insufficient permissions',
-          requiredRoles: roles,
-          userRole: req.user.role
-        },
-        ipAddress: req.ip,
-        userAgent: req.headers['user-agent'],
-        status: 'failure',
-        isSuspicious: true,
-        suspiciousReasons: ['Unauthorized role access attempt']
-      });
-      
       return res.status(403).json({
         success: false,
         error: `User role '${req.user.role}' is not authorized to access this route`

@@ -18,6 +18,7 @@ import {
   ListItemText,
   ListItemButton,
   Divider,
+  Badge,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -30,6 +31,7 @@ import {
   Security,
   CalendarMonth,
   LocalPharmacy,
+  Notifications,
 } from '@mui/icons-material';
 import { logout } from '../../store/slices/authSlice';
 import DarkModeToggle from '../DarkModeToggle';
@@ -43,6 +45,7 @@ const Layout = () => {
   
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [anchorElNotifications, setAnchorElNotifications] = useState(null);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -54,6 +57,14 @@ const Layout = () => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleOpenNotifications = (event) => {
+    setAnchorElNotifications(event.currentTarget);
+  };
+
+  const handleCloseNotifications = () => {
+    setAnchorElNotifications(null);
   };
 
   const handleLogout = () => {
@@ -122,6 +133,62 @@ const Layout = () => {
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             Secure Healthcare Platform
           </Typography>
+          
+          {/* Notifications Icon */}
+          <IconButton 
+            color="inherit" 
+            onClick={handleOpenNotifications}
+            sx={{ mr: 1 }}
+          >
+            <Badge badgeContent={3} color="error">
+              <Notifications />
+            </Badge>
+          </IconButton>
+          <Menu
+            anchorEl={anchorElNotifications}
+            open={Boolean(anchorElNotifications)}
+            onClose={handleCloseNotifications}
+            PaperProps={{
+              style: {
+                maxHeight: 400,
+                width: '350px',
+              },
+            }}
+          >
+            <MenuItem onClick={handleCloseNotifications}>
+              <Box>
+                <Typography variant="body2" fontWeight="bold">
+                  Appointment Reminder
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  You have an appointment tomorrow at 10:00 AM
+                </Typography>
+              </Box>
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={handleCloseNotifications}>
+              <Box>
+                <Typography variant="body2" fontWeight="bold">
+                  Lab Results Ready
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Your recent test results are now available
+                </Typography>
+              </Box>
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={handleCloseNotifications}>
+              <Box>
+                <Typography variant="body2" fontWeight="bold">
+                  Prescription Refill Due
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Time to refill your medication
+                </Typography>
+              </Box>
+            </MenuItem>
+          </Menu>
+
           <DarkModeToggle />
           <Box sx={{ flexGrow: 0, ml: 1 }}>
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
