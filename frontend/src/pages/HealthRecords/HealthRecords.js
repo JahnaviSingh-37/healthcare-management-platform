@@ -116,26 +116,37 @@ const HealthRecords = () => {
       }
       
       // Process symptoms - backend expects a string, not an array
-      const symptomsArray = newRecord.symptoms.split(',').map(s => s.trim()).filter(s => s);
-      const symptomsString = symptomsArray.join(', '); // Convert array back to comma-separated string
+      let symptomsString = '';
+      if (newRecord.symptoms && newRecord.symptoms.trim()) {
+        const symptomsArray = newRecord.symptoms.split(',').map(s => s.trim()).filter(s => s);
+        symptomsString = symptomsArray.join(', '); // Convert array back to comma-separated string
+      }
       
       const recordData = {
         patient: newRecord.patientId, // Backend expects 'patient' not 'patientId'
         recordType: newRecord.recordType,
         diagnosis: newRecord.diagnosis.trim(),
-        symptoms: symptomsString, // Send as string, not array
+        symptoms: symptomsString, // Send as string, not array (empty string if no symptoms)
         treatment: newRecord.treatment.trim(),
         notes: newRecord.notes ? newRecord.notes.trim() : ''
       };
 
-      console.log('Sending health record data:', recordData);
+      console.log('=== Sending health record ===');
+      console.log('Record Data:', JSON.stringify(recordData, null, 2));
+      console.log('Data types:', {
+        patient: typeof recordData.patient,
+        diagnosis: typeof recordData.diagnosis,
+        symptoms: typeof recordData.symptoms,
+        treatment: typeof recordData.treatment
+      });
 
-      await axios.post(
+      const response = await axios.post(
         'http://localhost:5001/api/v1/health-records',
         recordData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
+      console.log('✅ Health record saved successfully:', response.data);
       setSuccess('Health record added successfully!');
       setOpenAddDialog(false);
       setNewRecord({
