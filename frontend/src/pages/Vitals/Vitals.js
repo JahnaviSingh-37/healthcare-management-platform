@@ -71,7 +71,16 @@ const Vitals = () => {
   const handleAddVital = async () => {
     try {
       setError('');
+      setSuccess('');
       const token = localStorage.getItem('token');
+      
+      // Validate that at least one vital is provided
+      if (!newVital.heartRate && !newVital.systolic && !newVital.temperature && 
+          !newVital.weight && !newVital.height && !newVital.oxygenSaturation) {
+        setError('Please enter at least one vital measurement');
+        return;
+      }
+      
       const vitalData = {
         patient: user._id,
         heartRate: newVital.heartRate ? { value: parseFloat(newVital.heartRate), unit: 'bpm' } : undefined,
@@ -80,7 +89,7 @@ const Vitals = () => {
           diastolic: parseFloat(newVital.diastolic),
           unit: 'mmHg'
         } : undefined,
-        temperature: newVital.temperature ? { value: parseFloat(newVital.temperature), unit: '°F' } : undefined,
+        temperature: newVital.temperature ? { value: parseFloat(newVital.temperature), unit: 'fahrenheit' } : undefined,
         weight: newVital.weight ? { value: parseFloat(newVital.weight), unit: 'lbs' } : undefined,
         height: newVital.height ? { value: parseFloat(newVital.height), unit: 'inches' } : undefined,
         oxygenSaturation: newVital.oxygenSaturation ? { value: parseFloat(newVital.oxygenSaturation), unit: '%' } : undefined,
@@ -88,12 +97,15 @@ const Vitals = () => {
         recordDate: new Date()
       };
 
-      await axios.post('http://localhost:5001/api/v1/vitals', vitalData, {
+      console.log('Sending vital data:', vitalData);
+
+      const response = await axios.post('http://localhost:5001/api/v1/vitals', vitalData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
+      console.log('Vitals saved successfully:', response.data);
       setSuccess('Vitals recorded successfully!');
-      fetchVitals();
+      await fetchVitals();
       setOpenDialog(false);
       setNewVital({
         heartRate: '',
@@ -107,6 +119,7 @@ const Vitals = () => {
       });
     } catch (error) {
       console.error('Error adding vital:', error);
+      console.error('Error response:', error.response?.data);
       setError(error.response?.data?.error || 'Failed to add vitals. Please try again.');
     }
   };
@@ -187,18 +200,16 @@ const Vitals = () => {
               Vitals Monitoring
             </Typography>
           </Box>
-          {user?.role !== 'patient' && (
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                variant="contained"
-                startIcon={<Add />}
-                onClick={() => setOpenDialog(true)}
-                sx={{ borderRadius: 2, px: 3 }}
-              >
-                Record Vitals
-              </Button>
-            </motion.div>
-          )}
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={() => setOpenDialog(true)}
+              sx={{ borderRadius: 2, px: 3 }}
+            >
+              Record Vitals
+            </Button>
+          </motion.div>
         </Box>
       </motion.div>
 
