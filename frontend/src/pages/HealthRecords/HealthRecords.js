@@ -115,15 +115,17 @@ const HealthRecords = () => {
         return;
       }
       
+      // Process symptoms - backend expects a string, not an array
       const symptomsArray = newRecord.symptoms.split(',').map(s => s.trim()).filter(s => s);
+      const symptomsString = symptomsArray.join(', '); // Convert array back to comma-separated string
       
       const recordData = {
         patient: newRecord.patientId, // Backend expects 'patient' not 'patientId'
         recordType: newRecord.recordType,
-        diagnosis: newRecord.diagnosis,
-        symptoms: symptomsArray,
-        treatment: newRecord.treatment,
-        notes: newRecord.notes
+        diagnosis: newRecord.diagnosis.trim(),
+        symptoms: symptomsString, // Send as string, not array
+        treatment: newRecord.treatment.trim(),
+        notes: newRecord.notes ? newRecord.notes.trim() : ''
       };
 
       console.log('Sending health record data:', recordData);
