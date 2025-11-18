@@ -1,416 +1,411 @@
-# 🏥 Healthcare Management Platform
+# Secure Healthcare Management Platform
 
-> A comprehensive, secure healthcare management system with advanced security features, role-based access control, and real-time health monitoring capabilities.
+## 🏥 Overview
+A **HIPAA-compliant** healthcare management platform with enterprise-grade security, governance, and compliance features. This system demonstrates practical implementation of cybersecurity controls, risk management, and regulatory compliance for handling Protected Health Information (PHI).
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
-[![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-6%2B-green.svg)](https://www.mongodb.com/)
+**Perfect for**: GRC roles, Healthcare IT, Cybersecurity positions, Compliance roles
 
-## 📋 Table of Contents
+**Key Differentiators**: Real-world HIPAA compliance implementation, comprehensive audit logging, ML-based threat detection, and complete security lifecycle management.
 
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Technology Stack](#technology-stack)
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
-- [Security Features](#security-features)
-- [API Documentation](#api-documentation)
-- [Contributing](#contributing)
-- [License](#license)
+## 🔐 Key Security Features
 
-## 🎯 Overview
+### 1. Data Protection
+- **End-to-End Encryption**: AES-256-GCM encryption for sensitive health data
+- **Field-Level Encryption**: Separate encryption for different data fields
+- **Encryption Key Management**: Secure key rotation and storage
+- **Data-at-Rest Encryption**: Database-level encryption
 
-The Healthcare Management Platform is a modern, full-stack web application designed to streamline healthcare operations while maintaining the highest security standards. It provides comprehensive tools for managing patient records, appointments, vitals, and prescriptions with role-based access control.
+### 2. Access Control
+- **Role-Based Access Control (RBAC)**: Patient, Doctor, Admin, and Nurse roles
+- **Multi-Factor Authentication (MFA)**: TOTP-based 2FA
+- **Session Management**: Secure JWT tokens with refresh mechanism
+- **Password Security**: Bcrypt hashing with salt rounds
 
-### Key Highlights
+### 3. Security Monitoring
+- **Anomaly Detection**: ML-based suspicious activity detection
+- **Audit Logging**: Complete audit trail of all data access
+- **Rate Limiting**: Protection against brute force attacks
+- **Security Headers**: HSTS, CSP, X-Frame-Options, etc.
 
-- 🔐 **Enterprise-Grade Security**: AES-256-GCM encryption, JWT authentication, and MFA support
-- 👥 **Role-Based Access Control**: Patient, Doctor, Nurse, and Admin roles with granular permissions
-- 📊 **Real-Time Monitoring**: Live health vitals tracking and analytics
-- 🎨 **Modern UI/UX**: Responsive Material-UI design with dark mode support
-- 🤖 **AI-Powered**: Anomaly detection for suspicious activities
-- 📱 **Mobile-Friendly**: Fully responsive design for all devices
-
-## ✨ Features
-
-### For Patients
-- 📅 Book and manage appointments with doctors
-- 📋 View personal health records and medical history
-- 💊 Access prescriptions and medication details
-- 📈 Track vital signs (blood pressure, heart rate, temperature, etc.)
-- 🔔 Receive real-time notifications
-- 👤 Manage profile and personal information
-
-### For Doctors
-- 👨‍⚕️ Manage patient appointments and schedules
-- 📝 Create and update health records
-- 💊 Prescribe medications with detailed instructions
-- 📊 View patient vitals and health trends
-- 👥 Access patient information securely
-- 📈 Dashboard with patient statistics
-
-### For Administrators
-- 👥 User management and role assignment
-- 📊 System-wide analytics and reporting
-- 🔍 Audit logs and security monitoring
-- ⚙️ System configuration and settings
-- 🚨 Anomaly detection alerts
+### 4. Compliance & Governance
+- **HIPAA Compliance**: Full implementation of HIPAA Security Rule (Administrative, Physical, Technical Safeguards)
+- **GDPR Ready**: Data privacy, user consent, and data subject rights
+- **Audit Trail**: Comprehensive logging for compliance reporting and forensic analysis
+- **Risk Management**: ML-based anomaly detection for proactive threat identification
+- **NIST Framework**: Aligned with NIST Cybersecurity Framework (Identify, Protect, Detect, Respond, Recover)
+- **OWASP Top 10**: Mitigation strategies for all OWASP Top 10 vulnerabilities
 
 ## 🏗️ Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    Frontend (React)                          │
-│  • Material-UI Components    • Redux State Management       │
-│  • Framer Motion Animations  • Responsive Design            │
-│  • Dark Mode Support         • Real-time Updates            │
-└────────────────────────┬────────────────────────────────────┘
-                         │ REST API (HTTPS)
-                         │ JWT Authentication
-┌────────────────────────▼────────────────────────────────────┐
-│                Backend (Node.js/Express)                     │
-│  • Authentication & Authorization  • Business Logic         │
-│  • Data Encryption/Decryption     • Rate Limiting           │
-│  • Security Middleware            • Audit Logging           │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-          ┌──────────────┴──────────────┐
-          │                             │
-┌─────────▼─────────┐         ┌────────▼──────────┐
-│  MongoDB Database  │         │  Redis Cache      │
-│  • User Data       │         │  • Sessions       │
-│  • Health Records  │         │  • Rate Limiting  │
-│  • Appointments    │         │  • OTP Storage    │
-└────────────────────┘         └───────────────────┘
-          │
-┌─────────▼──────────────┐
-│  Anomaly Detection     │
-│  (Python/Flask)        │
-│  • ML-based Detection  │
-│  • Activity Analysis   │
-└────────────────────────┘
+┌─────────────────────────────────────────────┐
+│          Frontend (React + HTTPS)           │
+│  - Secure Authentication UI                 │
+│  - Encrypted Data Display                   │
+│  - Health Monitoring Dashboard              │
+└─────────────────┬───────────────────────────┘
+                  │ TLS 1.3
+┌─────────────────▼───────────────────────────┐
+│       Backend API (Node.js/Express)         │
+│  - JWT Authentication                       │
+│  - RBAC Middleware                          │
+│  - Data Encryption/Decryption               │
+│  - Anomaly Detection                        │
+└─────────────────┬───────────────────────────┘
+                  │
+┌─────────────────▼───────────────────────────┐
+│      Database (MongoDB/PostgreSQL)          │
+│  - Encrypted Health Records                 │
+│  - User Management                          │
+│  - Audit Logs                               │
+└─────────────────────────────────────────────┘
 ```
 
-For detailed architecture information, see [ARCHITECTURE.md](ARCHITECTURE.md).
+## 📋 Features
 
-## 🛠️ Technology Stack
+### Clinical Data Management
+- **Vitals Monitoring**: Track heart rate, blood pressure, temperature, oxygen saturation, weight, height
+- **Health Records**: Encrypted medical records, diagnoses, treatments (doctor-only access)
+- **Prescriptions**: Medication management and tracking
+- **Appointments**: Schedule and manage patient-doctor appointments
+- **Lab Results**: Secure storage and retrieval of test results
 
-### Frontend
-- **React 18** - Modern UI library
-- **Material-UI (MUI)** - Component library
-- **Redux Toolkit** - State management
-- **Framer Motion** - Animations
-- **Axios** - HTTP client
-- **React Router** - Navigation
+### Role-Based Access Control (RBAC)
+1. **Patient**: 
+   - View own health data and medical history
+   - Record personal vitals
+   - Schedule appointments
+   - Manage profile and preferences
 
-### Backend
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **MongoDB** - Database
-- **Mongoose** - ODM
-- **Redis** - Caching & sessions
-- **JWT** - Authentication
-- **Bcrypt** - Password hashing
+2. **Doctor**: 
+   - Access assigned patients' complete medical records
+   - Add diagnoses and treatment plans
+   - Prescribe medications
+   - View patient vitals and trends
 
-### Security
-- **Helmet.js** - Security headers
-- **Express Rate Limit** - Rate limiting
-- **Crypto** - Encryption (AES-256-GCM)
-- **Speakeasy** - MFA/TOTP
-- **Winston** - Logging
+3. **Nurse**: 
+   - Limited access to patient vitals
+   - Record vital signs for patients
+   - View basic patient information
 
-### ML/AI
-- **Python/Flask** - Anomaly detection service
-- **Scikit-learn** - Machine learning
-- **Pandas** - Data processing
+4. **Admin**: 
+   - System management and configuration
+   - User account administration
+   - Security monitoring and audit log access
+   - System-wide analytics and reporting
+
+### Governance, Risk & Compliance (GRC) Features
+- **Comprehensive Audit Trail**: Every data access logged with user, timestamp, action, and IP
+- **Anomaly Detection**: ML-based system flags suspicious user behavior patterns
+- **Risk Indicators**: Failed logins, unusual access patterns, privilege escalation attempts
+- **Compliance Reporting**: Exportable audit logs for regulatory reporting
+- **Data Subject Rights**: Support for GDPR-style data access and deletion requests
+- **Incident Response**: Automated alerts for security events
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
-- **Node.js** 18.x or higher
-- **MongoDB** 6.x or higher
-- **Redis** (optional, for caching)
-- **Python** 3.8+ (for anomaly detection)
-- **npm** or **yarn**
+- Node.js (v18 or higher)
+- MongoDB or PostgreSQL
+- Redis (for session management)
+- npm or yarn
 
 ### Installation
 
 1. **Clone the repository**
-   ```bash
-   git clone https://github.com/JahnaviSingh-37/healthcare-management-platform.git
-   cd healthcare-management-platform
-   ```
-
-2. **Install backend dependencies**
-   ```bash
-   cd backend
-   npm install
-   ```
-
-3. **Install frontend dependencies**
-   ```bash
-   cd ../frontend
-   npm install
-   ```
-
-4. **Install anomaly detection dependencies**
-   ```bash
-   cd ../anomaly-detection
-   pip install -r requirements.txt
-   ```
-
-### Configuration
-
-1. **Backend Environment Variables**
-   
-   Create `backend/.env`:
-   ```env
-   # Server
-   NODE_ENV=development
-   PORT=5001
-
-   # Database
-   DATABASE_URL=mongodb://localhost:27017/healthcare_db
-
-   # JWT
-   JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-   JWT_EXPIRE=7d
-
-   # Encryption
-   ENCRYPTION_KEY=your-32-byte-encryption-key-here
-   ENCRYPTION_ALGORITHM=aes-256-gcm
-
-   # Redis (optional)
-   REDIS_URL=redis://localhost:6379
-
-   # Email (for notifications)
-   EMAIL_HOST=smtp.gmail.com
-   EMAIL_PORT=587
-   EMAIL_USER=your-email@gmail.com
-   EMAIL_PASSWORD=your-app-password
-
-   # Rate Limiting
-   RATE_LIMIT_WINDOW=15
-   RATE_LIMIT_MAX_REQUESTS=100
-   ```
-
-2. **Frontend Environment Variables**
-   
-   Create `frontend/.env`:
-   ```env
-   REACT_APP_API_URL=http://localhost:5001/api
-   ```
-
-### Running the Application
-
-#### Option 1: Using the start script (Recommended)
 ```bash
-# From root directory
-chmod +x start.sh
-./start.sh
+git clone <repository-url>
+cd healthcare
 ```
 
-#### Option 2: Manual startup
+2. **Install dependencies**
+```bash
+# Install backend dependencies
+cd backend
+npm install
 
-**Terminal 1 - Backend:**
+# Install frontend dependencies
+cd ../frontend
+npm install
+```
+
+3. **Configure environment variables**
+```bash
+# Backend (.env)
+cp backend/.env.example backend/.env
+# Edit backend/.env with your configuration
+
+# Frontend (.env)
+cp frontend/.env.example frontend/.env
+# Edit frontend/.env with your configuration
+```
+
+4. **Generate encryption keys**
 ```bash
 cd backend
-npm start
+npm run generate-keys
 ```
 
-**Terminal 2 - Frontend:**
+5. **Initialize database**
 ```bash
+cd backend
+npm run db:setup
+```
+
+6. **Start the application**
+
+Development mode:
+```bash
+# Terminal 1 - Backend
+cd backend
+npm run dev
+
+# Terminal 2 - Frontend
 cd frontend
 npm start
 ```
 
-**Terminal 3 - Anomaly Detection (Optional):**
+Production mode:
 ```bash
-cd anomaly-detection
-python app.py
+# Build frontend
+cd frontend
+npm run build
+
+# Start backend with production build
+cd ../backend
+npm start
 ```
 
-### Accessing the Application
+## 🔧 Configuration
 
-- **Frontend**: http://localhost:3001
-- **Backend API**: http://localhost:5001
-- **API Documentation**: http://localhost:5001/api-docs (if Swagger is configured)
+### Environment Variables
 
-### Default Credentials
-
-After seeding the database:
-
-**Admin:**
-- Email: `admin@hospital.com`
-- Password: `Admin@123`
-
-**Doctor:**
-- Email: `dr.sarah.wilson@hospital.com`
-- Password: `Doctor@123`
-
-**Patient:**
-- Email: `john.smith@email.com`
-- Password: `Patient@123`
-
-## 📁 Project Structure
-
-```
-healthcare-management-platform/
-├── backend/                    # Backend API
-│   ├── src/
-│   │   ├── config/            # Configuration files
-│   │   ├── middleware/        # Express middleware
-│   │   ├── models/            # Mongoose models
-│   │   ├── routes/            # API routes
-│   │   ├── utils/             # Utility functions
-│   │   └── server.js          # Entry point
-│   ├── scripts/               # Database scripts
-│   └── package.json
-│
-├── frontend/                   # React frontend
-│   ├── public/
-│   ├── src/
-│   │   ├── components/        # Reusable components
-│   │   ├── pages/             # Page components
-│   │   ├── store/             # Redux store
-│   │   ├── theme/             # Theme configuration
-│   │   ├── utils/             # Utility functions
-│   │   ├── App.js             # Root component
-│   │   └── index.js           # Entry point
-│   └── package.json
-│
-├── anomaly-detection/         # ML service
-│   ├── app.py                 # Flask API
-│   ├── requirements.txt
-│   └── README.md
-│
-├── ARCHITECTURE.md            # Architecture documentation
-├── README.md                  # This file
-├── LICENSE                    # MIT License
-└── start.sh                   # Startup script
+#### Backend (.env)
+```env
+NODE_ENV=development
+PORT=5000
+DATABASE_URL=mongodb://localhost:27017/healthcare
+REDIS_URL=redis://localhost:6379
+JWT_SECRET=<generate-secure-secret>
+JWT_REFRESH_SECRET=<generate-secure-secret>
+ENCRYPTION_KEY=<generate-32-byte-key>
+MFA_SECRET=<generate-secure-secret>
+SESSION_TIMEOUT=3600000
+MAX_LOGIN_ATTEMPTS=5
+RATE_LIMIT_WINDOW=900000
+RATE_LIMIT_MAX_REQUESTS=100
 ```
 
-## 🔒 Security Features
+#### Frontend (.env)
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_WS_URL=ws://localhost:5000
+REACT_APP_ENABLE_MFA=true
+```
 
-### Data Protection
-- **AES-256-GCM Encryption**: All sensitive health data encrypted at rest
-- **Field-Level Encryption**: Individual fields encrypted with unique IVs
-- **Secure Key Management**: Encryption keys stored securely
-- **TLS/SSL**: All data encrypted in transit
+## 🧪 Testing
 
-### Authentication & Authorization
-- **JWT Tokens**: Secure token-based authentication
-- **Refresh Tokens**: Long-lived sessions with refresh mechanism
-- **MFA Support**: Two-factor authentication using TOTP
-- **Password Security**: Bcrypt hashing with salt rounds
-- **Role-Based Access Control**: Granular permissions by role
+```bash
+# Backend tests
+cd backend
+npm test
 
-### Security Middleware
-- **Helmet.js**: Security headers (CSP, HSTS, X-Frame-Options)
-- **CORS Protection**: Configurable cross-origin policies
-- **Rate Limiting**: Prevents brute force attacks
-- **Input Validation**: Sanitization and validation of all inputs
-- **XSS Protection**: Cross-site scripting prevention
-- **CSRF Protection**: Cross-site request forgery prevention
+# Frontend tests
+cd frontend
+npm test
 
-### Monitoring & Compliance
-- **Audit Logging**: Complete trail of all data access
-- **Anomaly Detection**: ML-based suspicious activity detection
-- **Security Alerts**: Real-time notifications of security events
-- **HIPAA Compliance**: Following healthcare data standards
-- **GDPR Ready**: Data privacy and consent mechanisms
+# Security tests
+cd backend
+npm run test:security
+```
 
-## 📚 API Documentation
+## 📊 API Documentation
 
 ### Authentication Endpoints
-```
-POST   /api/auth/register        # Register new user
-POST   /api/auth/login           # Login user
-POST   /api/auth/logout          # Logout user
-POST   /api/auth/forgot-password # Request password reset
-POST   /api/auth/reset-password  # Reset password
-GET    /api/auth/me              # Get current user
-PUT    /api/auth/update-profile  # Update profile
-```
-
-### User Endpoints
-```
-GET    /api/users                # Get all users (Admin)
-GET    /api/users/:id            # Get user by ID
-PUT    /api/users/:id            # Update user
-DELETE /api/users/:id            # Delete user (Admin)
-GET    /api/users/doctors        # Get all doctors
-```
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login with credentials
+- `POST /api/auth/mfa/verify` - Verify MFA code
+- `POST /api/auth/refresh` - Refresh access token
+- `POST /api/auth/logout` - Logout user
 
 ### Health Records Endpoints
-```
-GET    /api/health-records       # Get health records
-POST   /api/health-records       # Create record (Doctor)
-GET    /api/health-records/:id   # Get record by ID
-PUT    /api/health-records/:id   # Update record (Doctor)
-DELETE /api/health-records/:id   # Delete record (Doctor/Admin)
-```
-
-### Appointment Endpoints
-```
-GET    /api/appointments         # Get appointments
-POST   /api/appointments         # Book appointment
-GET    /api/appointments/:id     # Get appointment by ID
-PUT    /api/appointments/:id     # Update appointment
-DELETE /api/appointments/:id     # Cancel appointment
-```
+- `GET /api/health-records` - Get user's health records
+- `POST /api/health-records` - Create new health record
+- `PUT /api/health-records/:id` - Update health record
+- `DELETE /api/health-records/:id` - Delete health record
 
 ### Vitals Endpoints
-```
-GET    /api/vitals               # Get vitals
-POST   /api/vitals               # Add vitals
-GET    /api/vitals/:id           # Get vitals by ID
-PUT    /api/vitals/:id           # Update vitals
-DELETE /api/vitals/:id           # Delete vitals
-```
+- `GET /api/vitals` - Get vital signs
+- `POST /api/vitals` - Add new vital reading
 
-### Prescription Endpoints
-```
-GET    /api/prescriptions        # Get prescriptions
-POST   /api/prescriptions        # Create prescription (Doctor)
-GET    /api/prescriptions/:id    # Get prescription by ID
-PUT    /api/prescriptions/:id    # Update prescription (Doctor)
-DELETE /api/prescriptions/:id    # Delete prescription (Doctor)
-```
+### Admin Endpoints
+- `GET /api/admin/users` - List all users
+- `GET /api/admin/audit-logs` - View audit logs
+- `GET /api/admin/security-alerts` - View security alerts
+
+## � Compliance & Security Documentation
+
+- **[COMPLIANCE.md](./COMPLIANCE.md)** - Detailed HIPAA compliance implementation, NIST alignment, OWASP mitigation
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System architecture and security design
+- **[SECURITY.md](./SECURITY.md)** - Security policy and vulnerability reporting
+
+## 🎯 GRC Skills Demonstrated
+
+This project showcases practical experience in:
+
+### Governance
+- ✅ Policy enforcement through RBAC
+- ✅ Access control management
+- ✅ Security architecture design
+- ✅ Separation of duties
+
+### Risk Management
+- ✅ Threat identification (anomaly detection)
+- ✅ Risk assessment automation
+- ✅ Security monitoring and alerting
+- ✅ Incident detection and response
+
+### Compliance
+- ✅ HIPAA Security Rule implementation
+- ✅ NIST Cybersecurity Framework alignment
+- ✅ OWASP Top 10 mitigation
+- ✅ Audit logging for regulatory reporting
+- ✅ Data privacy controls (GDPR-ready)
+
+### Technical Security
+- ✅ Encryption implementation (at rest and in transit)
+- ✅ Authentication and authorization
+- ✅ Secure coding practices
+- ✅ Security testing and validation
+
+## �🔒 Security Best Practices
+
+### For Developers
+1. Never commit sensitive keys or credentials
+2. Use environment variables for configuration
+3. Validate all user inputs
+4. Implement proper error handling without leaking information
+5. Keep dependencies updated
+6. Review code for security vulnerabilities
+
+### For Administrators
+1. Enable HTTPS/TLS in production
+2. Regularly rotate encryption keys
+3. Monitor audit logs for suspicious activity
+4. Keep backup of encryption keys securely
+5. Implement network-level security (firewall, VPN)
+6. Regular security audits and penetration testing
+
+### For Users
+1. Use strong, unique passwords
+2. Enable MFA
+3. Never share login credentials
+4. Log out after use on shared devices
+5. Report suspicious activity immediately
+
+## 📝 Compliance
+
+### HIPAA Compliance Checklist
+- ✅ Access Controls
+- ✅ Audit Controls
+- ✅ Integrity Controls
+- ✅ Transmission Security
+- ✅ Encryption and Decryption
+- ✅ Authentication
+- ✅ Automatic Logoff
+
+### GDPR Compliance
+- ✅ Data minimization
+- ✅ Purpose limitation
+- ✅ User consent management
+- ✅ Right to access
+- ✅ Right to erasure
+- ✅ Data portability
+- ✅ Breach notification
+
+## 🛡️ Incident Response
+
+If you suspect a security breach:
+1. Immediately lock affected accounts
+2. Review audit logs
+3. Identify the scope of the breach
+4. Notify affected users
+5. Document the incident
+6. Implement corrective measures
+
+## 📚 Technology Stack
+
+### Backend
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Database**: MongoDB / PostgreSQL
+- **Cache**: Redis
+- **Authentication**: JWT, Passport.js
+- **Encryption**: Node Crypto (AES-256-GCM)
+- **MFA**: Speakeasy (TOTP)
+
+### Frontend
+- **Framework**: React.js
+- **State Management**: Redux Toolkit
+- **UI Library**: Material-UI
+- **HTTP Client**: Axios
+- **Routing**: React Router
+- **Charts**: Chart.js / Recharts
+
+### Security Tools
+- **Helmet.js**: Security headers
+- **Express Rate Limit**: Rate limiting
+- **bcrypt**: Password hashing
+- **validator**: Input validation
+- **hpp**: HTTP Parameter Pollution protection
+- **cors**: CORS configuration
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Write tests
+5. Submit a pull request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 👨‍💻 Author
+## � For Recruiters & Hiring Managers
 
-**Jahnavi Singh**
-- GitHub: [@JahnaviSingh-37](https://github.com/JahnaviSingh-37)
+### Why This Project Stands Out for GRC Roles
 
-## 🙏 Acknowledgments
+This platform demonstrates:
+1. **Practical Compliance Knowledge**: Real HIPAA implementation, not just theory
+2. **Risk Management Skills**: Automated threat detection and monitoring
+3. **Technical Competency**: Can translate compliance requirements into technical controls
+4. **Security Mindset**: Security-first architecture from the ground up
+5. **Documentation**: Professional compliance documentation and policies
 
-- Material-UI for the beautiful component library
-- MongoDB team for the excellent database
-- Express.js community for the robust framework
-- React team for the amazing UI library
+### Relevant for These Roles
+- GRC Analyst
+- Compliance Analyst (Healthcare IT)
+- Information Security Analyst
+- Risk Analyst
+- IT Auditor
+- Cybersecurity GRC Specialist
+- Healthcare Information Security Officer
 
-## 📞 Support
+## 📞 Contact
 
-For support, email your-email@example.com or open an issue in the repository.
+- **Developer**: Jahnavi Singh
+- **GitHub**: [@JahnaviSingh-37](https://github.com/JahnaviSingh-37)
+- **Repository**: [healthcare-management-platform](https://github.com/JahnaviSingh-37/healthcare-management-platform)
+
+For security issues, please see [SECURITY.md](./SECURITY.md)
+
+## ⚠️ Disclaimer
+
+This is a portfolio/demonstration project showcasing security and compliance best practices. For production healthcare environments, conduct thorough security audits, penetration testing, and ensure compliance with local regulations before deployment.
 
 ---
 
-Made with ❤️ by Jahnavi Singh
+**Version**: 1.0.0  
+**Last Updated**: November 18, 2025  
+**Maintained by**: Jahnavi Singh
